@@ -1,0 +1,56 @@
+version: "3.5"
+
+services:
+  master:
+    image: datagrip/greenplum:latest
+    container_name: gp_master
+    hostname: master
+    networks:
+      gp_network:
+        ipv4_address: 192.168.19.10
+    environment:
+      - GREENPLUM_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d
+      - gp_master_data:/opt/gpdata/master
+    privileged: true
+
+  seg1:
+    image: datagrip/greenplum:latest
+    container_name: gp_seg1
+    hostname: seg1
+    networks:
+      gp_network:
+        ipv4_address: 192.168.19.11
+    environment:
+      - GREENPLUM_PASSWORD=postgres
+    volumes:
+      - gp_seg1_data:/opt/gpdata/primary
+    privileged: true
+
+  seg2:
+    image: datagrip/greenplum:latest
+    container_name: gp_seg2
+    hostname: seg2
+    networks:
+      gp_network:
+        ipv4_address: 192.168.19.12
+    environment:
+      - GREENPLUM_PASSWORD=postgres
+    volumes:
+      - gp_seg2_data:/opt/gpdata/primary
+    privileged: true
+
+volumes:
+  gp_master_data:
+  gp_seg1_data:
+  gp_seg2_data:
+
+networks:
+  gp_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.19.0/24
