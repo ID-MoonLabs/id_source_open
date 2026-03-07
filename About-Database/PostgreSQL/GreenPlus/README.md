@@ -1,4 +1,5 @@
-# 确保在项目根目录 GreenPlus/ 下
+### 1. 进入根目录
+```
 cd GreenPlus
 ```
 
